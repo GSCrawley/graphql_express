@@ -14,10 +14,16 @@ type Meal {
     description: String!
 }
 
-type Query {
-  getAbout: About
-  getmeal(time: String!): Meal
-}`)
+enum MealTime {
+    breakfast
+    lunch 
+    dinner
+  }
+  
+  type Query {
+    getAbout: About
+      getmeal(time: MealTime!): Meal
+  }`)
 
 // Define a resolver
 
@@ -25,7 +31,7 @@ const root = {
     getAbout: () => {
       return { message: 'Im Hungry' }
     },
-    getmeal: ({time}) =>  {
+    getmeal: ({MealTime}) =>  {
         const allMeals = { breakfast: 'cereal', lunch: 'noodles', dinner: 'pizza' }
         const meal = allMeals[time]
         return { description: meal }
