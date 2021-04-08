@@ -10,9 +10,13 @@ type About {
     message: String!
 }
 
+type Meal {
+    description: String!
+}
 
 type Query {
   getAbout: About
+  getmeal(time: String!): Meal
 }`)
 
 // Define a resolver
@@ -21,8 +25,12 @@ const root = {
     getAbout: () => {
       return { message: 'Im Hungry' }
     },
-   
-    }         
+    getmeal: ({time}) =>  {
+        const allMeals = { breakfast: 'cereal', lunch: 'noodles', dinner: 'pizza' }
+        const meal = allMeals[time]
+        return { description: meal }
+    }
+}         
 
 // Create an express app
 const app = express()
@@ -39,3 +47,5 @@ const port = 4000
 app.listen(port, () => {
   console.log(`Running on port: ${port}`)
 })
+
+
