@@ -6,13 +6,13 @@ const { buildSchema } = require('graphql')
 // Create a schema
 
 const schema = buildSchema(`
-type Meal {
-    description: String!
+type About {
+    message: String!
 }
+
 
 type Query {
   getAbout: About
-  getMeal(time: String!): Meal
 }`)
 
 // Define a resolver
@@ -21,9 +21,7 @@ const root = {
     getAbout: () => {
       return { message: 'Im Hungry' }
     },
-        getmeal: () => {
-            return { description: 'Noodles w/ Sa                                                                                                                                                                                                                                                                                                                                          wce' }
-        }
+   
     }         
 
 // Create an express app
