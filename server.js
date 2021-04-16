@@ -10,31 +10,38 @@ type About {
     message: String!
 }
 
-type Meal {
-    description: String!
+type Book {
+    title: String!
+    author: String!
+    genre: String!
+    pages: Int!
 }
 
-enum MealTime {
-    breakfast
-    lunch 
-    dinner
-  }
-  
+
   type Query {
     getAbout: About
-      getmeal(time: MealTime!): Meal
+      getBook(id: Int!): Book
+      allBooks: [Book!]!
+    
   }`)
 
 // Define a resolver
+const bookList = [
+  { title: 'Siddhartha', author: 'Hermann Hesse', genre: 'Philosophical Fiction', pages: 152 },
+  { title: 'I, Robot', author: 'Isaac Asimov', genre: 'Science Fiction', pages: 253 },
+  { title: 'A Clockwork Orange', author: 'Anthony Burgess', genre: 'Dystopian Fiction', pages: 213 }
+]
 
 const root = {
     getAbout: () => {
-      return { message: 'Im Hungry' }
+      return { message: "Let's read a book! Remember Books?" }
     },
-    getmeal: ({MealTime}) =>  {
-        const allMeals = { breakfast: 'cereal', lunch: 'noodles', dinner: 'pizza' }
-        const meal = allMeals[time]
-        return { description: meal }
+    getBook: ({ id }) =>  {
+        
+        return bookList[id]
+    },
+    allBooks: () => {
+      return bookList
     }
 }         
 
