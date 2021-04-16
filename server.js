@@ -22,14 +22,16 @@ type Book {
     getAbout: About
       getBook(id: Int!): Book
       allBooks: [Book!]!
-    
+      firstBook: Book!
+      lastBook: Book!
   }`)
 
 // Define a resolver
 const bookList = [
-  { title: 'Siddhartha', author: 'Hermann Hesse', genre: 'Philosophical Fiction', pages: 152 },
   { title: 'I, Robot', author: 'Isaac Asimov', genre: 'Science Fiction', pages: 253 },
-  { title: 'A Clockwork Orange', author: 'Anthony Burgess', genre: 'Dystopian Fiction', pages: 213 }
+  { title: 'Siddhartha', author: 'Hermann Hesse', genre: 'Philosophical Fiction', pages: 152 },
+  { title: 'A Clockwork Orange', author: 'Anthony Burgess', genre: 'Dystopian Fiction', pages: 213 },
+  { title: 'The Stand', author: 'Stephen King', genre: 'Horror Fiction', pages: 873 }
 ]
 
 const root = {
@@ -42,6 +44,12 @@ const root = {
     },
     allBooks: () => {
       return bookList
+    },
+    firstBook: () => {
+      return bookList[id = 0]
+    },
+    lastBook: () => {
+      return bookList[id = 3]
     }
 }         
 
