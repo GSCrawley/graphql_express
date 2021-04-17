@@ -17,6 +17,11 @@ type Book {
     pages: Int!
 }
 
+type Time {
+  hour: Int!
+  minute: Int!
+  second: Int!
+}
 
   type Query {
     getAbout: About
@@ -24,6 +29,7 @@ type Book {
       allBooks: [Book!]!
       firstBook: Book!
       lastBook: Book!
+      getTime: Time!
   }`)
 
 // Define a resolver
@@ -33,6 +39,7 @@ const bookList = [
   { title: 'A Clockwork Orange', author: 'Anthony Burgess', genre: 'Dystopian Fiction', pages: 213 },
   { title: 'The Stand', author: 'Stephen King', genre: 'Horror Fiction', pages: 873 }
 ]
+
 
 const root = {
     getAbout: () => {
@@ -50,6 +57,11 @@ const root = {
     },
     lastBook: () => {
       return bookList[id = 3]
+    },
+    getTime: () => {
+      const now = new Date()
+      return { hour:now.getHours(), minute:now.getMinutes(), second: now.getSeconds() }
+
     }
 }         
 
