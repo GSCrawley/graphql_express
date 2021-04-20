@@ -23,13 +23,14 @@ type Time {
   second: Int!
 }
 
-  type Query {
+type Query {
     getAbout: About
       getBook(id: Int!): Book
       allBooks: [Book!]!
       firstBook: Book!
       lastBook: Book!
       getTime: Time!
+      getRandom(range: Int!): Int!
   }`)
 
 // Define a resolver
@@ -39,7 +40,6 @@ const bookList = [
   { title: 'A Clockwork Orange', author: 'Anthony Burgess', genre: 'Dystopian Fiction', pages: 213 },
   { title: 'The Stand', author: 'Stephen King', genre: 'Horror Fiction', pages: 873 }
 ]
-
 
 const root = {
     getAbout: () => {
@@ -61,8 +61,11 @@ const root = {
     getTime: () => {
       const now = new Date()
       return { hour:now.getHours(), minute:now.getMinutes(), second: now.getSeconds() }
-
-    }
+    },
+    getRandom: () => {
+      const num = Math.floor(Math.random() * 100) + 1 
+      return num
+    }                                                                                       
 }         
 
 // Create an express app
