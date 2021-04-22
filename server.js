@@ -23,6 +23,12 @@ type Time {
   second: Int!
 }
 
+type Roll {
+  total: Int!
+  sides: Int!
+  rolls: [Int!]!
+}
+
 type Query {
     getAbout: About
       getBook(id: Int!): Book
@@ -31,6 +37,11 @@ type Query {
       lastBook: Book!
       getTime: Time!
       getRandom(range: Int!): Int!
+      getRoll(sides: Int!, rolls: Int!): Roll
+      getBookCount: Book
+      booksInRange(start: Int!, count: Int!): [Book]
+      getBookByAuthor(author: String!): [Book]
+
   }`)
 
 // Define a resolver
@@ -40,6 +51,10 @@ const bookList = [
   { title: 'A Clockwork Orange', author: 'Anthony Burgess', genre: 'Dystopian Fiction', pages: 213 },
   { title: 'The Stand', author: 'Stephen King', genre: 'Horror Fiction', pages: 873 }
 ]
+
+function randomNumber(range){
+  return Math.floor(Math.random() * range)
+}
 
 const root = {
     getAbout: () => {
@@ -58,15 +73,66 @@ const root = {
     lastBook: () => {
       return bookList[id = 3]
     },
+    bookCount: () => {
+      const count = bookList.length
+      return { total: count}
+  },
+
     getTime: () => {
       const now = new Date()
       return { hour:now.getHours(), minute:now.getMinutes(), second: now.getSeconds() }
     },
-    getRandom: () => {
-      const num = Math.floor(Math.random() * 100) + 1 
-      return num
-    }                                                                                       
-}         
+    getRandom: ({ range }) => {
+      return randomNumber(range)
+  },
+    booksInRange: ({ start, count }) => {
+    const rangedArray = []
+    if ((start + count) < bookList.length) {
+      const limit = start + count
+      console.log('start: ', start, 'count: ', count)
+      for (let i = start; i < limit; i++) {
+          console.log(bookList[i])
+          rangedArray.push(bookList[i])
+      }
+  }
+  return rangedArray
+},
+
+  getBookByAuthor: ({ author }) => {
+    const authorsList = []
+    for (let i = 0; i < bookList.length -1; i++)
+        if (bookList[i].author === author) {
+            authorsList.push(bookList[i])
+        }
+    return authorsList
+  },
+
+  addBook: ({ title, author, genre, pages }) => {
+    const book = { title, author, genre, pages }
+    bookList.push(book)
+    return book
+},
+
+deleteBook: ({ id }) => {
+  deletedBook = bookList[id]
+  bookList.pop(deletedBook)
+  return deletedBook
+},
+      getRoll: ({ sides, rolls }) => {
+      var i;
+      var rollsTotal = 0
+      var rollList = []
+      for (i = 0; i < rolls; i++)
+      {
+          let oneRoll = (randomNumber(sides)+1);
+          rollList.push(oneRoll)
+          rollsTotal = rollsTotal + oneRoll
+      }
+      return { total: rollsTotal, sides, rolls: rollList}
+  }
+
+
+    }                                   
 
 // Create an express app
 const app = express()
