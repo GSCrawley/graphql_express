@@ -10,6 +10,12 @@ type About {
     message: String!
 }
 
+type Mutation {
+    addBook(title: String!, author: String!, genre: String!, pages:Int!): Book!
+    updateBook(id: Int!, title: String, author: String, genre: String, pages: Int!): Book!
+    deleteBook(id: Int!, title: String, author: String, genre: String, pages: Int!): Book!
+}
+
 type Book {
     title: String!
     author: String!
@@ -60,8 +66,7 @@ const root = {
     getAbout: () => {
       return { message: "Let's read a book! Remember Books?" }
     },
-    getBook: ({ id }) =>  {
-        
+    getBook: ({ id }) =>  {  
         return bookList[id]
     },
     allBooks: () => {
@@ -76,15 +81,35 @@ const root = {
     bookCount: () => {
       const count = bookList.length
       return { total: count}
-  },
-
+    },
+    addBook: ({ title, author, genre, pages }) => {
+    const book = { title, author, genre, pages }
+    bookList.push(book)
+    return book
+    },
+    updateBook: ({ id, title, author, genre, pages }) => {
+      const book = bookList[id]
+      if (book === undefined) {
+        return null
+    }
+    book.title = title || book.title
+    book.author = author || book.author
+    book.genre = genre || book.genre
+    boook.pages = pages || book.pages
+    return book
+    },
+    deleteBook: ({ id }) => {
+      deletedBook = bookList[id]
+      bookList.pop(deletedBook)
+      return deletedBook
+    },
     getTime: () => {
       const now = new Date()
       return { hour:now.getHours(), minute:now.getMinutes(), second: now.getSeconds() }
     },
     getRandom: ({ range }) => {
       return randomNumber(range)
-  },
+    },
     booksInRange: ({ start, count }) => {
     const rangedArray = []
     if ((start + count) < bookList.length) {
@@ -94,45 +119,29 @@ const root = {
           console.log(bookList[i])
           rangedArray.push(bookList[i])
       }
-  }
-  return rangedArray
-},
-
-  getBookByAuthor: ({ author }) => {
-    const authorsList = []
-    for (let i = 0; i < bookList.length -1; i++)
-        if (bookList[i].author === author) {
-            authorsList.push(bookList[i])
+    }
+    return rangedArray
+    },
+    getBookByAuthor: ({ author }) => {
+      const authorsList = []
+      for (let i = 0; i < bookList.length -1; i++)
+      if (bookList[i].author === author) {
+        authorsList.push(bookList[i])
         }
-    return authorsList
-  },
-
-  addBook: ({ title, author, genre, pages }) => {
-    const book = { title, author, genre, pages }
-    bookList.push(book)
-    return book
-},
-
-deleteBook: ({ id }) => {
-  deletedBook = bookList[id]
-  bookList.pop(deletedBook)
-  return deletedBook
-},
-      getRoll: ({ sides, rolls }) => {
+        return authorsList
+      },
+    getRoll: ({ sides, rolls }) => {
       var i;
       var rollsTotal = 0
       var rollList = []
-      for (i = 0; i < rolls; i++)
-      {
-          let oneRoll = (randomNumber(sides)+1);
-          rollList.push(oneRoll)
-          rollsTotal = rollsTotal + oneRoll
+      for (i = 0; i < rolls; i++) {
+        let oneRoll = (randomNumber(sides)+1);
+        rollList.push(oneRoll)
+        rollsTotal = rollsTotal + oneRoll
       }
-      return { total: rollsTotal, sides, rolls: rollList}
-  }
-
-
-    }                                   
+        return { total: rollsTotal, sides: sides, rolls: rollList}  
+      }
+    }                                  
 
 // Create an express app
 const app = express()
