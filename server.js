@@ -12,8 +12,8 @@ type About {
 
 type Mutation {
     addBook(title: String!, author: String!, genre: String!, pages:Int!): Book!
-    updateBook(id: Int!, title: String, author: String, genre: String, pages: Int!): Book!
-    deleteBook(id: Int!, title: String, author: String, genre: String, pages: Int!): Book!
+    updateBook(id: Int!, title: String, author: String, genre: String, pages: Int): Book
+    deleteBook(id: Int!, title: String, author: String, genre: String, pages: Int): Book!
 }
 
 enum Genres {
