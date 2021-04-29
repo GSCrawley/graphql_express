@@ -16,10 +16,17 @@ type Mutation {
     deleteBook(id: Int!, title: String, author: String, genre: String, pages: Int!): Book!
 }
 
+enum Genres {
+    SciFi
+    PhilosophicalFiction
+    DystopianFiction
+    HorrorFiction
+}
+
 type Book {
     title: String!
     author: String!
-    genre: String!
+    genre: Genres!
     pages: Int!
 }
 
@@ -46,16 +53,16 @@ type Query {
       getRoll(sides: Int!, rolls: Int!): Roll
       getBookCount: Book
       booksInRange(start: Int!, count: Int!): [Book]
-      getBookByAuthor(author: String!): [Book]
+      getBookByGenre(genre: String!): [Book]
 
   }`)
 
 // Define a resolver
 const bookList = [
-  { title: 'I, Robot', author: 'Isaac Asimov', genre: 'Science Fiction', pages: 253 },
-  { title: 'Siddhartha', author: 'Hermann Hesse', genre: 'Philosophical Fiction', pages: 152 },
-  { title: 'A Clockwork Orange', author: 'Anthony Burgess', genre: 'Dystopian Fiction', pages: 213 },
-  { title: 'The Stand', author: 'Stephen King', genre: 'Horror Fiction', pages: 873 }
+  { title: 'I, Robot', author: 'Isaac Asimov', genre: 'SciFi', pages: 253 },
+  { title: 'Siddhartha', author: 'Hermann Hesse', genre: 'PhilosophicalFiction', pages: 152 },
+  { title: 'A Clockwork Orange', author: 'Anthony Burgess', genre: 'DystopianFiction', pages: 213 },
+  { title: 'The Stand', author: 'Stephen King', genre: 'HorrorFiction', pages: 873 }
 ]
 
 function randomNumber(range){
@@ -66,27 +73,33 @@ const root = {
     getAbout: () => {
       return { message: "Let's read a book! Remember Books?" }
     },
+
     getBook: ({ id }) =>  {  
         return bookList[id]
     },
     allBooks: () => {
       return bookList
     },
+
     firstBook: () => {
       return bookList[id = 0]
     },
+
     lastBook: () => {
       return bookList[id = 3]
     },
+
     bookCount: () => {
       const count = bookList.length
       return { total: count}
     },
+
     addBook: ({ title, author, genre, pages }) => {
     const book = { title, author, genre, pages }
     bookList.push(book)
     return book
     },
+
     updateBook: ({ id, title, author, genre, pages }) => {
       const book = bookList[id]
       if (book === undefined) {
@@ -95,21 +108,25 @@ const root = {
     book.title = title || book.title
     book.author = author || book.author
     book.genre = genre || book.genre
-    boook.pages = pages || book.pages
+    book.pages = pages || book.pages
     return book
     },
+
     deleteBook: ({ id }) => {
       deletedBook = bookList[id]
       bookList.pop(deletedBook)
       return deletedBook
     },
+
     getTime: () => {
       const now = new Date()
       return { hour:now.getHours(), minute:now.getMinutes(), second: now.getSeconds() }
     },
+
     getRandom: ({ range }) => {
       return randomNumber(range)
     },
+
     booksInRange: ({ start, count }) => {
     const rangedArray = []
     if ((start + count) < bookList.length) {
@@ -122,14 +139,16 @@ const root = {
     }
     return rangedArray
     },
-    getBookByAuthor: ({ author }) => {
-      const authorsList = []
+
+    getBookByGenre: ({ genre }) => {
+      const genresList = []
       for (let i = 0; i < bookList.length -1; i++)
-      if (bookList[i].author === author) {
-        authorsList.push(bookList[i])
+      if (bookList[i].genre === genre) {
+        genresList.push(bookList[i])
         }
-        return authorsList
+        return genresList
       },
+
     getRoll: ({ sides, rolls }) => {
       var i;
       var rollsTotal = 0
